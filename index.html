@@ -1,1 +1,227 @@
 
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<meta name="description" content="LEA PARFUME - Luxury Perfumes">
+<title>LEA PARFUME</title>
+<style>
+:root{--gold:#d6b46a;--bg:#090909;--panel:#151515}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f7f1e5;font-family:Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:#090909f5;border-bottom:1px solid #514124;padding:14px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{color:var(--gold);font-size:25px;font-weight:bold;letter-spacing:3px}
+.logo small{display:block;color:white;font-size:10px;letter-spacing:5px;text-align:center;margin-top:5px}
+.btn{border:1px solid var(--gold);background:transparent;color:var(--gold);padding:10px 13px;border-radius:3px}
+.btn.gold{background:var(--gold);color:#111;font-weight:bold}
+.hero{min-height:340px;display:grid;place-items:center;text-align:center;padding:50px 20px;background:radial-gradient(ellipse,#443318,#171109 45%,#090909 75%)}
+.hero h1{font-size:clamp(38px,8vw,72px);color:var(--gold);letter-spacing:4px;margin:15px 0}
+.hero p{line-height:1.9;color:#eee}
+.section{padding:28px 5%}
+h2{color:var(--gold)}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.categories .active{background:var(--gold);color:#111}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin:18px 0}
+input,select{width:100%;min-width:0;padding:12px;background:#171717;color:white;border:1px solid #51452f;border-radius:3px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.card{background:var(--panel);border:1px solid #44371f;padding:13px;min-width:0}
+.photo{height:175px;display:grid;place-items:center;text-align:center;background:linear-gradient(145deg,#2b2417,#0c0c0c);border:1px solid #49391c;color:var(--gold);padding:12px;line-height:1.8}
+.card h3{color:var(--gold);margin-bottom:6px}
+.muted{color:#aaa;font-size:13px;line-height:1.7}
+.price{color:var(--gold);font-size:19px;font-weight:bold;margin:12px 0}
+.tag{display:inline-block;border:1px solid #776037;color:var(--gold);padding:4px 8px;font-size:12px}
+.card .btn{width:100%;margin-top:8px}
+footer{padding:28px 5%;text-align:center;border-top:1px solid #514124;color:#aaa;line-height:2}
+#cartPanel{display:none;position:fixed;inset:0;background:#000c;z-index:10;align-items:center;justify-content:center;padding:15px}
+.cartbox{background:#151515;border:1px solid var(--gold);padding:20px;width:min(500px,100%);max-height:85vh;overflow:auto}
+.cartrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #333}
+.smallbtn{background:none;color:var(--gold);border:1px solid #66502a;padding:5px 9px}
+@media(max-width:650px){header{padding:12px 4%}.logo{font-size:20px}.btn{padding:9px;font-size:12px}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.photo{height:145px}.section{padding:23px 4%}}
+@media(max-width:380px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">LEA PARFUME<small>LUXURY FRAGRANCES</small></div>
+  <div>
+    <button class="btn" id="langBtn" onclick="toggleLang()">English</button>
+    <button class="btn gold" onclick="openCart()">🛍 <span id="cartLabel">السلة</span> (<span id="count">0</span>)</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <span class="tag" data-ar="عطور مختارة بعناية" data-en="CURATED FRAGRANCES">عطور مختارة بعناية</span>
+    <h1>LEA PARFUME</h1>
+    <p data-ar="اكتشف عطرك. اترك أثراً لا يُنسى." data-en="Discover your fragrance. Leave a lasting impression.">اكتشف عطرك. اترك أثراً لا يُنسى.</p>
+    <button class="btn gold" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" data-ar="اكتشف المجموعة" data-en="Explore Collection">اكتشف المجموعة</button>
+  </div>
+</section>
+
+<main class="section" id="catalog">
+  <h2 data-ar="اكتشف مجموعتنا" data-en="Explore Our Collection">اكتشف مجموعتنا</h2>
+  <p class="muted" data-ar="اختر الفئة والجودة وابحث عن عطرك المفضل." data-en="Choose a category and quality tier to find your fragrance.">اختر الفئة والجودة وابحث عن عطرك المفضل.</p>
+
+  <div class="categories">
+    <button class="btn active" onclick="setGender('all',this)" data-ar="الكل" data-en="All">الكل</button>
+    <button class="btn" onclick="setGender('men',this)" data-ar="رجالي" data-en="Men">رجالي</button>
+    <button class="btn" onclick="setGender('women',this)" data-ar="نسائي" data-en="Women">نسائي</button>
+  </div>
+
+  <div class="filters">
+    <input id="search" placeholder="ابحث عن عطر..." oninput="renderProducts()">
+    <select id="quality" onchange="renderProducts()">
+      <option value="all" data-ar="كل المستويات" data-en="All tiers">كل المستويات</option>
+      <option value="Standard">Standard</option>
+      <option value="Premium">Premium</option>
+      <option value="VIP">VIP</option>
+    </select>
+    <select id="sort" onchange="renderProducts()">
+      <option value="default" data-ar="الترتيب الافتراضي" data-en="Default order">الترتيب الافتراضي</option>
+      <option value="low" data-ar="السعر: الأقل أولاً" data-en="Price: low to high">السعر: الأقل أولاً</option>
+      <option value="high" data-ar="السعر: الأعلى أولاً" data-en="Price: high to low">السعر: الأعلى أولاً</option>
+    </select>
+  </div>
+
+  <div class="grid" id="products"></div>
+  <p id="empty" class="muted" hidden data-ar="لا توجد منتجات مطابقة." data-en="No matching products.">لا توجد منتجات مطابقة.</p>
+</main>
+
+<section class="section">
+  <h2 data-ar="تجربة LEA PARFUME" data-en="The LEA PARFUME Experience">تجربة LEA PARFUME</h2>
+  <div class="grid">
+    <div class="card"><h3 data-ar="تشكيلة متنوعة" data-en="A Varied Collection">تشكيلة متنوعة</h3><p class="muted" data-ar="عطور رجالية ونسائية بمستويات مختلفة." data-en="Men's and women's fragrances across different tiers.">عطور رجالية ونسائية بمستويات مختلفة.</p></div>
+    <div class="card"><h3 data-ar="تفاصيل واضحة" data-en="Clear Details">تفاصيل واضحة</h3><p class="muted" data-ar="اطلع على مستوى المنتج وسعره وتوفره." data-en="View each product's tier, price and availability.">اطلع على مستوى المنتج وسعره وتوفره.</p></div>
+    <div class="card"><h3 data-ar="تصفح بسهولة" data-en="Easy Browsing">تصفح بسهولة</h3><p class="muted" data-ar="ابحث وصفِّ المنتجات من هاتفك بسهولة." data-en="Search and filter products easily on your phone.">ابحث وصفِّ المنتجات من هاتفك بسهولة.</p></div>
+  </div>
+</section>
+
+<footer>
+  <strong style="color:#d6b46a">LEA PARFUME</strong><br>
+  <span data-ar="العطور التي تعبّر عنك" data-en="Fragrances that express you">العطور التي تعبّر عنك</span><br>
+  Instagram: @lea_perfumes_sy<br>
+  © 2026 LEA PARFUME
+</footer>
+
+<div id="cartPanel" onclick="if(event.target===this)closeCart()">
+  <div class="cartbox">
+    <button class="btn" onclick="closeCart()">✕</button>
+    <h2 data-ar="سلة التسوق" data-en="Shopping Cart">سلة التسوق</h2>
+    <div id="cartItems"></div>
+    <h3 id="cartTotal"></h3>
+    <p class="muted" data-ar="هذه سلة تجريبية. الدفع وإرسال الطلبات غير مفعّلين بعد." data-en="Demo cart only. Payments and order submission are not enabled yet.">هذه سلة تجريبية. الدفع وإرسال الطلبات غير مفعّلين بعد.</p>
+  </div>
+</div>
+
+<script>
+const products=[
+{id:1,ar:"عطر رجالي - مثال",en:"Men's Fragrance - Example",gender:"men",quality:"Standard",price:0,notesAr:"أضف وصف الرائحة هنا",notesEn:"Add fragrance notes here",stock:0},
+{id:2,ar:"عطر رجالي فاخر - مثال",en:"Premium Men's Fragrance - Example",gender:"men",quality:"Premium",price:0,notesAr:"أضف وصف الرائحة هنا",notesEn:"Add fragrance notes here",stock:0},
+{id:3,ar:"عطر VIP رجالي - مثال",en:"VIP Men's Fragrance - Example",gender:"men",quality:"VIP",price:0,notesAr:"أضف وصف الرائحة هنا",notesEn:"Add fragrance notes here",stock:0},
+{id:4,ar:"عطر نسائي - مثال",en:"Women's Fragrance - Example",gender:"women",quality:"Standard",price:0,notesAr:"أضف وصف الرائحة هنا",notesEn:"Add fragrance notes here",stock:0},
+{id:5,ar:"عطر نسائي فاخر - مثال",en:"Premium Women's Fragrance - Example",gender:"women",quality:"Premium",price:0,notesAr:"أضف وصف الرائحة هنا",notesEn:"Add fragrance notes here",stock:0},
+{id:6,ar:"عطر VIP نسائي - مثال",en:"VIP Women's Fragrance - Example",gender:"women",quality:"VIP",price:0,notesAr:"أضف وصف الرائحة هنا",notesEn:"Add fragrance notes here",stock:0}
+];
+let lang="ar",gender="all",cart={};
+
+function t(ar,en){return lang==="ar"?ar:en}
+function toggleLang(){
+ lang=lang==="ar"?"en":"ar";
+ document.documentElement.lang=lang;
+ document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+ document.getElementById("langBtn").textContent=lang==="ar"?"English":"العربية";
+ document.getElementById("cartLabel").textContent=t("السلة","Cart");
+ document.getElementById("search").placeholder=t("ابحث عن عطر...","Search fragrances...");
+ document.querySelectorAll("[data-ar][data-en]").forEach(el=>el.textContent=el.dataset[lang]);
+ document.querySelectorAll("option[data-ar]").forEach(el=>el.textContent=el.dataset[lang]);
+ document.getElementById("heading").textContent=t("اكتشف مجموعتنا","Explore Our Collection");
+ document.getElementById("description").textContent=t("اختر الفئة والجودة وابحث عن عطرك المفضل.","Choose a category, quality tier and find your fragrance.");
+ document.getElementById("quality").options[0].textContent=t("كل المستويات","All tiers");
+ document.getElementById("sort").options[0].textContent=t("الترتيب الافتراضي","Default order");
+ document.getElementById("sort").options[1].textContent=t("السعر: الأقل أولاً","Price: low to high");
+ document.getElementById("sort").options[2].textContent=t("السعر: الأعلى أولاً","Price: high to low");
+ renderProducts();renderCart();
+}
+function setGender(g,btn){
+ gender=g;
+ document.querySelectorAll(".categories button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ renderProducts();
+}
+function renderProducts(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const tier=document.getElementById("quality").value;
+ let list=products.filter(p=>
+ (gender==="all"||p.gender===gender)&&
+ (tier==="all"||p.quality===tier)&&
+ (p.ar+" "+p.en+" "+p.quality).toLowerCase().includes(q)
+ );
+ const sort=document.getElementById("sort").value;
+ if(sort==="low")list.sort((a,b)=>a.price-b.price);
+ if(sort==="high")list.sort((a,b)=>b.price-a.price);
+ const host=document.getElementById("products");
+ host.innerHTML="";
+ document.getElementById("empty").hidden=list.length>0;
+ list.forEach(p=>{
+ const name=lang==="ar"?p.ar:p.en;
+ const notes=lang==="ar"?p.notesAr:p.notesEn;
+ const card=document.createElement("article");
+ card.className="card";
+ card.innerHTML=`
+ <div class="photo" aria-label="Product photo placeholder">LEA<br>PARFUME</div>
+ <p><span class="tag">${p.quality}</span></p>
+ <h3></h3>
+ <p class="muted"></p>
+ <p class="price"></p>
+ <p class="muted"></p>
+ <button class="btn gold"></button>`;
+ card.querySelector("h3").textContent=name;
+ card.querySelectorAll(".muted")[0].textContent=notes;
+ card.querySelector(".price").textContent=p.price>0?`${p.price} SYP`:t("السعر يحدد لاحقاً","Price to be confirmed");
+ card.querySelectorAll(".muted")[1].textContent=t("المخزون: يحدد لاحقاً","Stock: to be confirmed");
+ const btn=card.querySelector("button");
+ btn.textContent=t("أضف إلى السلة","Add to cart");
+ btn.onclick=()=>addToCart(p.id);
+ host.appendChild(card);
+ });
+}
+function addToCart(id){
+ cart[id]=(cart[id]||0)+1;
+ updateCount();
+}
+function updateCount(){
+ document.getElementById("count").textContent=Object.values(cart).reduce((a,b)=>a+b,0);
+}
+function openCart(){
+ renderCart();
+ document.getElementById("cartPanel").style.display="flex";
+}
+function closeCart(){document.getElementById("cartPanel").style.display="none"}
+function renderCart(){
+ const host=document.getElementById("cartItems");
+ host.innerHTML="";
+ let total=0,hasItems=false;
+ products.forEach(p=>{
+  const qty=cart[p.id]||0;
+  if(!qty)return;
+  hasItems=true;total+=p.price*qty;
+  const row=document.createElement("div");row.className="cartrow";
+  const label=document.createElement("span");
+  label.textContent=(lang==="ar"?p.ar:p.en)+" × "+qty;
+  const remove=document.createElement("button");remove.className="smallbtn";
+  remove.textContent=t("حذف","Remove");
+  remove.onclick=()=>{delete cart[p.id];updateCount();renderCart()};
+  row.append(label,remove);host.appendChild(row);
+ });
+ if(!hasItems)host.textContent=t("السلة فارغة","Your cart is empty");
+ document.getElementById("cartTotal").textContent=t("المجموع: ","Total: ")+total+" SYP";
+}
+renderProducts();
+</script>
+</body>
+</html>
+
